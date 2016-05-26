@@ -23,6 +23,34 @@ function onRequest(request, response, modules) {
                 bssids += "\"" + request.body.B3 + "\",";
                 rssis += "\"" + request.body.R3 + "\",";
                 break;
+            case 3:
+                bssids += "\"" + request.body.B4 + "\",";
+                rssis += "\"" + request.body.R4 + "\",";
+                break;
+            case 4:
+                bssids += "\"" + request.body.B5 + "\",";
+                rssis += "\"" + request.body.R5 + "\",";
+                break;
+            case 5:
+                bssids += "\"" + request.body.B6 + "\",";
+                rssis += "\"" + request.body.R6 + "\",";
+                break;
+            case 6:
+                bssids += "\"" + request.body.B7 + "\",";
+                rssis += "\"" + request.body.R7 + "\",";
+                break;
+            case 7:
+                bssids += "\"" + request.body.B8 + "\",";
+                rssis += "\"" + request.body.R8 + "\",";
+                break;
+            case 8:
+                bssids += "\"" + request.body.B9 + "\",";
+                rssis += "\"" + request.body.R9 + "\",";
+                break;
+            case 8:
+                bssids += "\"" + request.body.B10 + "\",";
+                rssis += "\"" + request.body.R10 + "\",";
+                break;
             default:
                 break;
         }
@@ -48,18 +76,20 @@ function onRequest(request, response, modules) {
 
         function distanceOf(result, result2) {
             var distance = 0;
-            var count = 0;
             // console.log("result=\n" + result);
             // console.log(result.BSSIDs["1"]);
             // console.log("result2=\n" + result2);
             for (var p1 in result.BSSIDs) {
-                count++;
+                if (result.BSSIDs[p1].length != 17) {
+                    break;//更对Bmob云逻辑，不加这个判断会出现错误！！
+                }
                 var BSSID = result.BSSIDs[p1];
                 // console.log("bssid" + BSSID);
                 var RSSI = result.RSSIs[p1];
                 // console.log("rssi" + RSSI);
                 var find = false;
                 for (var p2 in result2.BSSIDs) {
+
                     if (result2.BSSIDs[p2] == BSSID) {
                         find = true;
                         distance += Math.pow(result2.RSSIs[p2] - RSSI, 2);
@@ -70,9 +100,11 @@ function onRequest(request, response, modules) {
                     distance += Math.pow(RSSI, 2);
                 }
             }
-            console.log(count);
             for (var p1 in result2.BSSIDs) {
                 var BSSID = result2.BSSIDs[p1];
+                if (BSSID.length != 17) {
+                    break;
+                }
                 // console.log("bssid" + BSSID);
                 var RSSI = result2.RSSIs[p1];
                 // console.log("rssi" + RSSI);
@@ -117,6 +149,8 @@ function onRequest(request, response, modules) {
         }
         // response.end(location);
         console.log(location.BuildingName + location.RoomName + "(x=" + location.x + ",y=" + location.y + ")");
+        var re = "{\"BuildingName\":\""+location.BuildingName+"\",\"RoomName\":\""+ location.RoomName+"\",\"x\":"+ location.x+",\"y\":" +location.y+"}";
+        console.log(re);
     });
 }
 exports.locate = onRequest;
